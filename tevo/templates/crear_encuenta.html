@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Encuesta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #A9DFF7; /* Azul cielo pastel */
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h1 {
+            color: #666;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #A3E6B1; /* Verde menta */
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #C8A8D6; /* Lavanda suave */
+        }
+
+        .form-group textarea {
+            resize: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #A3E6B1; /* Verde menta */
+            border: none;
+            border-radius: 5px;
+            color: #666;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            background: #FFEBA1; /* Amarillo mantequilla */
+        }
+
+        .error-message {
+            color: #f56558;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Crear Encuesta</h1>
+            <p>Ingresa los detalles de tu encuesta</p>
+        </div>
+
+        <form method="POST" action="">
+
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" name="titulo" placeholder="Título de la encuesta" required>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" name="descripcion" rows="4" placeholder="Descripción de la encuesta" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_inicio">Fecha de Inicio</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_fin">Fecha de Fin</label>
+                <input type="date" id="fecha_fin" name="fecha_fin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="opciones">Opciones</label>
+                <input type="text" id="opcion1" name="opciones" placeholder="Opción 1" required>
+                <input type="text" id="opcion2" name="opciones" placeholder="Opción 2" required>
+                <div id="opciones-adicionales"></div>
+                <button type="button" onclick="agregarOpcion()" style="margin-top: 10px; background: #C8A8D6; border: none; border-radius: 5px; padding: 0.5rem; cursor: pointer;">Añadir opción</button>
+            </div>
+
+            <button type="submit" class="submit-btn">Crear Encuesta</button>
+
+            
+                <p class="error-message">{{ ERROR }}</p>
+        </form>
+    </div>
+
+    <script>
+        function agregarOpcion() {
+            const contenedor = document.getElementById('opciones-adicionales');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'opciones';
+            input.placeholder = `Opción ${contenedor.children.length + 3}`;
+            input.required = true;
+            input.style.marginTop = '10px';
+            contenedor.appendChild(input);
+        }
+    </script>
+</body>
+</html>

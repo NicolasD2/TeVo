@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #A9DFF7;  /* Azul cielo pastel */
+        }
+
+        .signup-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            background: #F7A1A3;  /* Rosa coral suave */
+            border-radius: 50%;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .logo-circle img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .signup-header h1 {
+            color: #666;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #A3E6B1;  /* Verde menta */
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #C8A8D6;  /* Lavanda suave */
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #A3E6B1;  /* Verde menta */
+            border: none;
+            border-radius: 5px;
+            color: #666;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            background: #FFEBA1;  /* Amarillo mantequilla */
+        }
+
+        .error-message {
+            color: #f56558;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #C8A8D6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo-circle">
+            <!-- Aquí puedes agregar tu logo -->
+            <img src="https://www.ucn.cl/wp-content/uploads/2018/05/Escudo-UCN-Full-Color.png" alt="Logo">
+        </div>
+        
+        <div class="signup-header">
+            <h1>Crear Cuenta</h1>
+            <p>Completa tus datos para registrarte</p>
+        </div>
+        
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="nombre">Nombre Completo</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirmar Contraseña</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+            
+            <button type="submit" class="submit-btn">Crear Cuenta</button>
+            
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <div class="login-link">
+                <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
