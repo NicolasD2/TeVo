@@ -62,9 +62,14 @@ class APIClient:
         url = f'{APIClient.API_BASE_URL}/encuestas/disponibles'
         try:
             response = requests.get(url, headers=headers)
-            return APIClient.handle_response(response)
+            print(f"Respuesta de la API: {response.status_code} - {response.text}")  # Agregado para depuración
+
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return {'msg': 'Error en la respuesta de la API', 'status_code': response.status_code}
         except requests.exceptions.RequestException as e:
-            return {'msg':'Error al conectar con el servidor'}
+            return {'msg': 'Error al conectar con el servidor'}
 
     @staticmethod
     def registrar_voto(headers, encuesta_id, opcion_id):

@@ -6,4 +6,6 @@ urlpatterns = [
     path('login', views.login_view, name='login'),  # Ruta para el login
     path('registro', views.crear_cuenta_view, name='registro'),  # Ruta para el registro
     path('logout/', views.logout_view, name='logout'), # Ruta para el cierre de sesión
+    path('health/', views.health, name='health_check'), # Ruta para verificar conexion con la API
+    path('ver_encuestas/', views.ver_encuestas, name ='ver_encuestas' )
 ]
