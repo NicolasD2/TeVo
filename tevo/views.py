@@ -188,7 +188,28 @@ def votos(request):
             return render(request,'ver_encuestas.html',{'success':'Voto registrado con exito'})
         except Exception as e:
             return render(request, 'ver_encuestas.html',{'error':'Ocurrio un error al registrar el voto. Inténtelo nuevamente'})
-    
+
+def ver_resultados_encuesta(request):
+    if request.method =='POST':
+        encuesta_id = request.POST.get('encuesta_id')
+        if not encuesta_id:
+            return render(request,'ver_encuestas.html',{'error':'El ID de la encuesta es obligatorio para ver los resultados'})
+        try:
+            token = request.session.get('user_token')
+            if not token:
+                return render(request,'login.html',{'error':'Debe iniciar sesion para ver los resultados'})
+            headers ={'Authorization':f'Bearer{token}'}
+            result = APIClient.obtener_resultados_encuesta(headers=headers, encuesta_id= int(encuesta_id))
+            
+            if result.get('msg'):
+                return render(request,'ver_encuestas.html',{'error':result['msg']})
+            return render(request, 'ver_resultados.html',{'resultados': result})
+        except Exception as e:
+            return render(request,'ver_encuestas.html',{'error':'Ocurrio un error al ver los resultados intentalo nuevamente'})
+    else:
+        return render(request,'ver_encuestas.html',{'error':'Método no permitido.'})    
+            
+
 
 
 
