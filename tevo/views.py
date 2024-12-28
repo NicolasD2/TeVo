@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from services.api.client import APIClient
 import requests
+from services.api.view_factory import ViewFactory
 
 def login_view(request):
     if request.method == 'POST':
@@ -38,14 +39,9 @@ def login_view(request):
                 request.session['user_token'] = token
                 request.session['user_role'] = user_role
                 
-                # Redirigir a diferentes templates según el rol
-                if user_role == 'creador':
-                    return render(request, 'creador_home.html')
-                elif user_role == 'participante':
-                    return render(request, 'participante_home.html')
-                else:
-                    # Template por defecto o manejo de rol desconocido
-                    return render(request, 'login.html')
+                # Usar la fabrica simplificada
+
+                return ViewFactory.get_renderer(request, user_role)
                 
             except Exception as e:
                 print(f"Error al iniciar sesión: {str(e)}")
@@ -113,14 +109,8 @@ def crear_cuenta_view(request):
                 request.session['user_role'] = user_role
                 
                 # Redirigir según el rol
-                if user_role == 'creador':
-                    return render(request, 'creador_home.html')
-                elif user_role == 'participante':
-                    return render(request, 'participante_home.html')
-                else:
-                    # Template por defecto
-                    return render(request, 'participante_home.html')
-
+                return ViewFactory.get_renderer(request, user_role)
+            
             except Exception as e:
                 print(f"Error al iniciar sesión después del registro: {str(e)}")
                 return render(request, 'login.html', 
