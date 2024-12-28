@@ -66,4 +66,18 @@ class APIClient:
         except requests.exceptions.RequestException as e:
             return {'msg':'Error al conectar con el servidor'}
 
-    
+    @staticmethod
+    def registrar_voto(headers, encuesta_id, opcion_id):
+        url= f'{APIClient.API_BASE_URL}/votos'
+        try:
+            data={
+                'encuesta_id': encuesta_id,
+                'opcion_id': opcion_id
+            }
+            response = requests.post(url, json=data, headers=headers)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return response.json()
+        except requests.exceptions.RequestException as e:
+            return {'msg':'Error al conectar con el servidor'}

@@ -172,7 +172,23 @@ def ver_encuestas(request):
             return render(request, 'login.html',{'error','Debe haber iniciado sesion para ver la encuesta'})
     return render(request,'ver_encuestas.html')
 
+def votos(request):
+    if request.method =='POST':
+        encuesta_id = request.POST.get('encuesta_id')
+        opcion_id = request.POST.get('opcion_id')
 
+        if not all([encuesta_id, opcion_id]):
+            return render(request, 'ver_encuestas.html',{'error':'El id de la encuesta y la opcion son obligatorias para registrar un voto'})
+        try:
+            token = request.session.get('user_token')
+            if not token:
+                return render(request, 'login.html',{'error','Debe haber iniciado sesion para ver la encuesta'})
+            headers ={'Authorization':f'Bearer{token}'}
+            result = APIClient.registrar_voto(headers = headers, data={'encuesta_id': int(encuesta_id),'opcion_id': int(opcion_id)})
+            return render(request,'ver_encuestas.html',{'success':'Voto registrado con exito'})
+        except Exception as e:
+            return render(request, 'ver_encuestas.html',{'error':'Ocurrio un error al registrar el voto. Inténtelo nuevamente'})
+    
 
 
 
