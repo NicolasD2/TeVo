@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votar Encuesta</title>
+</head>
+<body>
+    <h1>Votar Encuesta</h1>
+
+    {% if error %}
+        <div class="error">
+            <p>{{ error }}</p>
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="encuesta_id" value="{{ encuesta_id }}">
+        
+        {% for opcion in opciones %}
+            <div>
+                <input type="radio" id="opcion_{{ opcion.id }}" name="opcion_id" value="{{ opcion.id }}">
+                <label for="opcion_{{ opcion.id }}">{{ opcion.texto }}</label>
+            </div>
+        {% endfor %}
+        
+        <button type="submit">Votar</button>
+    </form>
+</body>
+</html>

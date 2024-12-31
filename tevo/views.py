@@ -184,24 +184,35 @@ def ver_encuestas(request):
 
 def votos(request):
     if request.method == 'POST':
+        token = request.session.get('user_token')
+        if not token:
+            return redirect('login')  # Redirigir al login si no hay token
+
+        # Obtener el ID de la encuesta y la opción seleccionada del formulario
         encuesta_id = request.POST.get('encuesta_id')
         opcion_id = request.POST.get('opcion_id')
 
-        if not all([encuesta_id, opcion_id]):
-            return render(request, 'ver_encuestas.html', {'error': 'El ID de la encuesta y la opción son obligatorios para registrar un voto'})
+        if not encuesta_id or not opcion_id:
+            return render(request, 'votos.html', {'error': 'Por favor selecciona una opción.'})
 
         try:
-            token = request.session.get('user_token')
-            if not token:
-                return render(request, 'login.html', {'error': 'Debe iniciar sesión para registrar un voto'})
-
             headers = {'Authorization': f'Bearer {token}'}
-            result = APIClient.registrar_voto(headers=headers, data={'encuesta_id': int(encuesta_id), 'opcion_id': int(opcion_id)})
+            # Aquí llamas a la API para registrar el voto
+            result = APIClient.registrar_voto(headers=headers, encuesta_id=encuesta_id, opcion_id=opcion_id)
 
-            return render(request, 'ver_encuestas.html', {'success': 'Voto registrado con éxito'})
-        
+            print(f"Resultado de la API: {result}")  # Para depuración
+
+            if result.get('msg'):
+                return render(request, 'votos.html', {'error': result['msg'], 'encuesta_id': encuesta_id, 'opciones': []})
+
+            # Si el voto se registró correctamente, redirigir a los resultados o a una página de éxito
+            return redirect('resultado_encuesta', encuesta_id=encuesta_id)
+
         except Exception as e:
-            return render(request, 'ver_encuestas.html', {'error': 'Ocurrió un error al registrar el voto. Inténtelo nuevamente'})
+            print(f"Error al registrar voto: {str(e)}")  # Para depuración
+            return render(request, 'votos.html', {'error': 'Ocurrió un error al registrar tu voto.', 'encuesta_id': encuesta_id, 'opciones': []})
+
+    return render(request, 'ver_encuestas.html', {'error': 'Método no permitido.'})
 
 
 def ver_resultados_encuesta(request):

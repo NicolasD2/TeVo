@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encuestas</title>
     <style>
+        /* Estilos existentes */
         * {
             margin: 0;
             padding: 0;
@@ -49,12 +50,56 @@
             padding: 1rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         .encuesta-item h3 {
             margin-bottom: 0.5rem;
         }
         .encuesta-item p {
             margin-bottom: 0.5rem;
+        }
+        .vote-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .vote-button:hover {
+            background-color: #0056b3;
+        }
+        .options {
+            margin-bottom: 1rem;
+        }
+        .option-item {
+            margin-bottom: 0.5rem;
+        }
+        .option-item input[type="radio"] {
+            margin-right: 10px;
+        }
+        .reset-link {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #dc3545;
+            text-decoration: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .reset-link:hover {
+            color: #c82333;
         }
     </style>
 </head>
@@ -71,9 +116,32 @@
                 {% for encuesta in encuestas %}
                     <li class="encuesta-item">
                         <h3>{{ encuesta.titulo }}</h3>
+                        <p><strong>ID de la encuesta: </strong>{{ encuesta.id }}</p> 
                         <p><strong>Descripción:</strong> {{ encuesta.descripcion }}</p>
                         <p><strong>Fecha de inicio:</strong> {{ encuesta.fecha_inicio }}</p>
                         <p><strong>Fecha de fin:</strong> {{ encuesta.fecha_fin }}</p>
+                        
+                        <form action="{% url 'votos' %}" method="POST">
+                            {% csrf_token %}
+                            <!-- Campo oculto para el ID de la encuesta -->
+                            <input type="hidden" name="encuesta_id" value="{{ encuesta.id }}">
+                            
+                            <p><strong>Opciones:</strong></p>
+                            <div class="options">
+ {% for opcion in encuesta.opciones %}
+                                    <div class="option-item">
+                                        <input type="radio" id="opcion_{{ opcion.id }}" name="opcion_id" value="{{ opcion.id }}">
+                                        <label for="opcion_{{ opcion.id }}">{{ opcion.texto }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Botón para votar -->
+                            <button type="submit" class="vote-button">Votar encuesta</button>
+                        </form>
+                        
+                        <!-- Enlace para resetear la selección -->
+                        <a href="javascript:void(0)" class="reset-link" onclick="document.querySelector('form').reset();">Borrar selección</a>
                     </li>
                 {% endfor %}
             </ul>
