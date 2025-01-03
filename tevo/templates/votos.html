@@ -4,28 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Votar Encuesta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Votar Encuesta</h1>
+    <div class="container">
+        <h1>Resultado de Votación</h1>
 
-    {% if error %}
-        <div class="error">
-            <p>{{ error }}</p>
-        </div>
-    {% endif %}
-
-    <form method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="encuesta_id" value="{{ encuesta_id }}">
-        
-        {% for opcion in opciones %}
-            <div>
-                <input type="radio" id="opcion_{{ opcion.id }}" name="opcion_id" value="{{ opcion.id }}">
-                <label for="opcion_{{ opcion.id }}">{{ opcion.texto }}</label>
+        {% if error %}
+            <div class="message error">
+                <p>{{ error }}</p>
             </div>
-        {% endfor %}
-        
-        <button type="submit">Votar</button>
-    </form>
+        {% elif exito %}
+            <div class="message success">
+                <p>{{ exito }}</p>
+            </div>
+        {% endif %}
+
+        <a href="{% url 'ver_encuestas' %}" class="button">Volver a las encuestas</a>
+    </div>
 </body>
 </html>

@@ -155,6 +155,8 @@ def crear_encuesta(request):
         except Exception as e:
             return render(request, 'crear_encuesta.html', {'error': 'Ocurrió un error al intentar crear la encuesta. Inténtelo de nuevo.'})
 
+    # Si la solicitud es GET, mostrar el formulario
+    return render(request, 'crear_encuesta.html')
 
 def ver_encuestas(request):
     if request.method == 'GET':
@@ -215,29 +217,46 @@ def votos(request):
     return render(request, 'ver_encuestas.html', {'error': 'Método no permitido.'})
 
 
+
 def ver_resultados_encuesta(request):
-    if request.method == 'POST':
-        encuesta_id = request.POST.get('encuesta_id')
-        if not encuesta_id:
-            return render(request, 'ver_encuestas.html', {'error': 'El ID de la encuesta es obligatorio para ver los resultados'})
+    context = {'resultados': None, 'error': None}
+    try:
+        encuesta_id = request.GET.get('encuesta_id')
 
-        try:
-            token = request.session.get('user_token')
-            if not token:
-                return render(request, 'login.html', {'error': 'Debe iniciar sesión para ver los resultados'})
+        # Validar ID de la encuesta
+        if not encuesta_id or not encuesta_id.isdigit() or int(encuesta_id) <= 0:
+            context['error'] = 'El ID de la encuesta debe ser un número positivo válido.'
+            return render(request, 'ver_resultados_encuesta.html', context)
 
-            headers = {'Authorization': f'Bearer {token}'}
-            result = APIClient.obtener_resultados_encuesta(headers=headers, encuesta_id=int(encuesta_id))
+        encuesta_id = int(encuesta_id)
+        token = request.session.get('user_token')
 
-            if result.get('msg'):
-                return render(request, 'ver_encuestas.html', {'error': result['msg']})
+        # Validar token
+        
+        if not token:
+            context['error'] = 'Debe iniciar sesión para ver los resultados.'
+            return render(request, 'ver_resultados_encuesta.html', context)
 
-            return render(request, 'ver_resultados.html', {'resultados': result})
+        # Llamar a la API
+        headers = {'Authorization': f'Bearer {token}'}
+        result = APIClient.obtener_resultados_encuesta(headers, encuesta_id)
 
-        except Exception as e:
-            return render(request, 'ver_encuestas.html', {'error': 'Ocurrió un error al ver los resultados. Inténtelo nuevamente'})
+        # Manejar respuesta de la API
+        if result.get('msg'):
+            context['error'] = result['msg']
+        elif result.get('resultados'):
+            context['resultados'] = result['resultados']
+        else:
+            context['error'] = 'No se encontraron resultados para esta encuesta.'
 
-    return render(request, 'ver_encuestas.html', {'error': 'Método no permitido.'})
+    except ValueError:
+        context['error'] = 'El ID de la encuesta debe ser un número válido.'
+    except Exception as e:
+        
+        context['error'] = 'Ocurrió un error al obtener los resultados. Inténtelo nuevamente.'
+
+    return render(request, 'ver_resultados_encuesta.html', context)
+
 
 
 def health(request):

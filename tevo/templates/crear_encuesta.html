@@ -115,8 +115,9 @@
             <p>Ingresa los detalles de tu encuesta</p>
         </div>
 
-        <form method="POST" action="">
-
+        <form method="POST" action="" onsubmit="return validarFechas()">
+            {% csrf_token %}
+            
             <div class="form-group">
                 <label for="titulo">Título</label>
                 <input type="text" id="titulo" name="titulo" placeholder="Título de la encuesta" required>
@@ -147,8 +148,7 @@
 
             <button type="submit" class="submit-btn">Crear Encuesta</button>
 
-            
-                <p class="error-message">{{ ERROR }}</p>
+            <p class="error-message" id="error-message" style="display:none;">La fecha de inicio no puede ser mayor que la fecha de fin.</p>
         </form>
     </div>
 
@@ -162,6 +162,20 @@
             input.required = true;
             input.style.marginTop = '10px';
             contenedor.appendChild(input);
+        }
+
+        function validarFechas() {
+            const fechaInicio = document.getElementById('fecha_inicio').value;
+            const fechaFin = document.getElementById('fecha_fin').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (fechaInicio && fechaFin && fechaInicio > fechaFin) {
+                errorMessage.style.display = 'block'; // Mostrar el mensaje de error
+                return false; // Prevenir el envío del formulario
+            } else {
+                errorMessage.style.display = 'none'; // Ocultar el mensaje de error
+                return true; // Permitir el envío del formulario
+            }
         }
     </script>
 </body>

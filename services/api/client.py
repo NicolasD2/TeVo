@@ -1,5 +1,6 @@
 import requests
 
+
 class APIClient:
     API_BASE_URL = "https://idonosob.pythonanywhere.com" 
 
@@ -86,15 +87,22 @@ class APIClient:
                 return response.json()  # Maneja el error de la API
         except requests.exceptions.RequestException as e:
             return {'msg': 'Error al conectar con el servidor'}
-            
+
+
+
     @staticmethod
     def obtener_resultados_encuesta(headers, encuesta_id):
         url = f'{APIClient.API_BASE_URL}/encuestas/{encuesta_id}/resultados'
         try:
-            response = requests.get(url, headers=headers)  # Cambiado a GET
+            response = requests.get(url, headers=headers)
+            
             if response.status_code == 200:
                 return response.json()
+            elif response.status_code == 404:
+                return {'msg': 'La encuesta solicitada no existe.', 'status_code': 404}
+            elif response.status_code == 403:
+                return {'msg': 'No tiene permisos para ver esta encuesta.', 'status_code': 403}
             else:
-                return {'msg': 'Error en la respuesta de la API', 'status_code': response.status_code}
+                return {'msg': f'Error inesperado: {response.status_code}', 'status_code': response.status_code}
         except requests.exceptions.RequestException as e:
-            return {'msg': 'Error al conectar con el servidor'}
+            return {'msg': 'Error al conectar con el servidor.'}

@@ -9,4 +9,6 @@ urlpatterns = [
     path('health/', views.health, name='health_check'),
     path('ver_encuestas/', views.ver_encuestas, name='ver_encuestas'),
     path('votos/', views.votos, name='votos'),  
+    path('ver_resultados_encuesta/', views.ver_resultados_encuesta, name= 'ver_resultados_encuesta'),
+    path('crear_encuesta/', views.crear_encuesta, name ='crear_encuesta'),
 ]
