@@ -15,12 +15,10 @@
             <div class="card-body">
                 <h5 class="card-title">Encuestas</h5>
                 <p class="card-text">Visualiza las encuestas disponibles</p>
-                <a href="crear_encuesta" class="btn btn-primary">Crear Encuestas</a>
-                <a href="ver_resultados_encuesta" class="btn btn-primary">Ver Resultados Encuesta</a>
+                <a href="{% url 'crear_encuesta' %}" class="btn btn-primary">Crear Encuestas</a>
+                <a href="{% url 'ver_resultados_encuesta' %}" class="btn btn-primary">Ver Resultados Encuesta</a>
             </div>
         </div>
     </div>
-
-
 </div>
 {% endblock %}
