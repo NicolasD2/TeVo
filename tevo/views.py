@@ -219,44 +219,51 @@ def votos(request):
 
 
 def ver_resultados_encuesta(request):
+    """
+    Vista para obtener y mostrar los resultados de las encuestas según el rol del usuario autenticado.
+
+    Parámetros:
+    - request: Objeto HttpRequest que contiene los datos de la solicitud.
+
+    Funcionalidad:
+    1. Inicializa el contexto con 'resultados' y 'error' como None.
+    2. Intenta obtener el token de usuario de la sesión.
+       - Si no hay token, establece un mensaje de error en el contexto y renderiza la plantilla 'ver_resultados_encuesta.html'.
+    3. Configura los encabezados de autorización con el token JWT.
+    4. Obtiene el rol del usuario de la sesión.
+    5. Llama al método APIClient.obtener_resultados_encuestas(headers) para obtener los resultados de las encuestas.
+       - Si la respuesta contiene un mensaje de error ('msg'), lo establece en el contexto.
+       - Si la respuesta es exitosa, establece la lista de encuestas en el contexto.
+    6. Maneja posibles excepciones:
+       - ValueError: Establece un mensaje de error indicando que el ID de la encuesta debe ser un número válido.
+       - Exception: Establece un mensaje de error genérico indicando que ocurrió un error al obtener los resultados.
+    7. Renderiza la plantilla 'ver_resultados_encuesta.html' con el contexto.
+
+    Retorna:
+    - HttpResponse: Renderiza la plantilla 'ver_resultados_encuesta.html' con el contexto actualizado.
+    """
     context = {'resultados': None, 'error': None}
     try:
-        encuesta_id = request.GET.get('encuesta_id')
-
-        # Validar ID de la encuesta
-        if not encuesta_id or not encuesta_id.isdigit() or int(encuesta_id) <= 0:
-            context['error'] = 'El ID de la encuesta debe ser un número positivo válido.'
-            return render(request, 'ver_resultados_encuesta.html', context)
-
-        encuesta_id = int(encuesta_id)
         token = request.session.get('user_token')
-
-        # Validar token
-        
         if not token:
             context['error'] = 'Debe iniciar sesión para ver los resultados.'
             return render(request, 'ver_resultados_encuesta.html', context)
 
-        # Llamar a la API
         headers = {'Authorization': f'Bearer {token}'}
-        result = APIClient.obtener_resultados_encuesta(headers, encuesta_id)
+        user_role = request.session.get('user_role')
 
-        # Manejar respuesta de la API
-        if result.get('msg'):
-            context['error'] = result['msg']
-        elif result.get('resultados'):
-            context['resultados'] = result['resultados']
+        encuestas_resultados = APIClient.obtener_resultados_encuestas(headers)
+        if 'msg' in encuestas_resultados:
+            context['error'] = encuestas_resultados['msg']
         else:
-            context['error'] = 'No se encontraron resultados para esta encuesta.'
+            context['encuestas'] = encuestas_resultados.get('encuestas', [])
 
     except ValueError:
         context['error'] = 'El ID de la encuesta debe ser un número válido.'
     except Exception as e:
-        
         context['error'] = 'Ocurrió un error al obtener los resultados. Inténtelo nuevamente.'
 
     return render(request, 'ver_resultados_encuesta.html', context)
-
 
 
 def health(request):
